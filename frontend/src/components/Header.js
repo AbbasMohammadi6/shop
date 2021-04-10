@@ -4,6 +4,7 @@ import Container from "./Container";
 
 const Div = styled.div`
   background: #333;
+  margin-bottom: 1rem;
 
   & a {
     transition: color 200ms;
@@ -42,14 +43,14 @@ const Header = () => {
     <Div>
       <Container>
         <Nav>
+          <Logo>
+            <a href="#">OliShop</a>
+          </Logo>
+
           <Links>
             <a href="#">عضو شدن </a>
             <a href="#">وارد شدن</a>
           </Links>
-
-          <Logo>
-            <a href="#">OliShop</a>
-          </Logo>
         </Nav>
       </Container>
     </Div>

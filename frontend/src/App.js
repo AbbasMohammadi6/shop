@@ -1,6 +1,8 @@
 import React from "react";
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
+import Container from "./components/Container";
 import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -39,7 +41,13 @@ const GlobalStyle = createGlobalStyle`
   body{
   font-family: 'Vazir', Arial, sans-serif;
   font-weight:normal;
+  direction: rtl;
   }
+`;
+
+const Main = styled.main`
+  min-height: 80vh;
+  margin-bottom: 1rem;
 `;
 
 const App = () => {
@@ -47,7 +55,11 @@ const App = () => {
     <>
       <GlobalStyle />
       <Header />
-      <main></main>
+      <Main>
+        <Container>
+          <HomeScreen />
+        </Container>
+      </Main>
     </>
   );
 };

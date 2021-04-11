@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Rating from "@material-ui/lab/Rating";
-import products from "../products";
+import { useDispatch, useSelector } from "react-redux";
 import { device } from "../utils/deviceSizes";
+import { getAllProducts } from "../slices/getAllProducts";
+import Loader from "../components/Loader";
 
 const Main = styled.div`
   display: grid;
@@ -53,30 +55,58 @@ const RatingContianer = styled.div`
 `;
 
 const HomeScreen = () => {
+  const dispatch = useDispatch();
+
+  const { loading, error, products } = useSelector(
+    (state) => state.getAllProducts
+  );
+
+  useEffect(() => {
+    dispatch(getAllProducts());
+    // console.log("RUNNING....");
+    // (async function () {
+    //   try {
+    //     const products = await axios.get("/api/products");
+
+    //     console.log(products);
+    //   } catch (e) {
+    //     console.log(e.response);
+    //   }
+    // })();
+  }, [dispatch]);
+
   return (
-    <Main>
-      {products.map((product) => (
-        <Card key={product._id}>
-          <Link to={`/product/${product._id}`}>
-            <Img src={product.imgUrl} />
-          </Link>
-          <P>
-            <Link to={`/product/${product.id}`}>
-              <strong>{product.name}</strong>
-            </Link>
-          </P>
-          <RatingContianer>
-            <Rating
-              name="read-only"
-              value={product.rating}
-              readOnly
-              size="small"
-              precision={0.5}
-            />
-          </RatingContianer>
-        </Card>
-      ))}
-    </Main>
+    <>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <h1>{error}</h1>
+      ) : (
+        <Main>
+          {products.map((product) => (
+            <Card key={product._id}>
+              <Link to={`/product/${product._id}`}>
+                <Img src={product.imgUrl} />
+              </Link>
+              <P>
+                <Link to={`/product/${product.id}`}>
+                  <strong>{product.name}</strong>
+                </Link>
+              </P>
+              <RatingContianer>
+                <Rating
+                  name="read-only"
+                  value={product.rating}
+                  readOnly
+                  size="small"
+                  precision={0.5}
+                />
+              </RatingContianer>
+            </Card>
+          ))}
+        </Main>
+      )}
+    </>
   );
 };
 

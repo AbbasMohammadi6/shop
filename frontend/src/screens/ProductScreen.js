@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import products from "../products";
+import { useDispatch, useSelector } from "react-redux";
 import { device } from "../utils/deviceSizes";
+import { getProduct } from "../slices/getProduct";
+import Loader from "../components/Loader";
 
 const H1 = styled.h1`
   @media ${device.tablet} {
     font-size: 1.5rem;
-  }
-  @media ${device.mobileM} {
-    font-size: 1rem;
   }
   @media ${device.mobileM} {
     font-size: 1rem;
@@ -102,45 +101,60 @@ const BtnContainer = styled.div`
 `;
 
 const ProductScreen = ({ match }) => {
-  const [product, setProduct] = useState({});
   const [qty, setQty] = useState(0);
 
   const id = match.params.id;
 
+  const dispatch = useDispatch();
+  const { loading, product, error } = useSelector((state) => state.getProduct);
+
   useEffect(() => {
-    setProduct(products.find((product) => product._id === id));
-  }, [id, product]);
+    dispatch(getProduct(id));
+  }, [id, dispatch]);
 
   return (
     <>
-      {product.name && (
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <h1>{error}</h1>
+      ) : (
         <>
-          <H1>{product.name}</H1>
+          {product.name && (
+            <>
+              <H1>{product.name}</H1>
 
-          <Div>
-            <div>
-              <Img src={product.imgUrl} />
-            </div>
-            <BtnContainer>
-              <button disabled={product.countInStock === 0}>
-                افزودن به خرید{" "}
-              </button>
-              {product.countInStock ? (
-                <select value={qty} onChange={(e) => setQty(e.target.value)}>
-                  <option value={0} disabled={true}>
-                    تعداد
-                  </option>
-                  {[...new Array(product.countInStock).keys()].map((item) => (
-                    <option key={item}>{item + 1}</option>
-                  ))}
-                </select>
-              ) : (
-                <div>ناموجود</div>
-              )}
-            </BtnContainer>
-          </Div>
+              <Div>
+                <div>
+                  <Img src={product.imgUrl} />
+                </div>
+                <BtnContainer>
+                  <button disabled={product.countInStock === 0}>
+                    افزودن به سبد خرید{" "}
+                  </button>
+                  {product.countInStock ? (
+                    <select
+                      value={qty}
+                      onChange={(e) => setQty(e.target.value)}
+                    >
+                      <option value={0} disabled={true}>
+                        تعداد
+                      </option>
+                      {[...new Array(product.countInStock).keys()].map(
+                        (item) => (
+                          <option key={item}>{item + 1}</option>
+                        )
+                      )}
+                    </select>
+                  ) : (
+                    <div>ناموجود</div>
+                  )}
+                </BtnContainer>
+              </Div>
 
-          <P>{product.description}</P>
+              <P>{product.description}</P>
+            </>
+          )}
         </>
       )}
     </>

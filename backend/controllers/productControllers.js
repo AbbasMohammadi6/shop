@@ -7,12 +7,13 @@ export const getAllProducts = asyncHandler(async (req, res) => {
   res.json(products);
 });
 
-// export const getAllProducts = async (req, res) => {
-//   try {
-//     const products = await Product.find({});
+export const getProduct = asyncHandler(async (req, res) => {
+  const id = req.params.id;
 
-//     res.json(products);
-//   } catch (e) {
-//     res.status(500).json({ message: "Server error, try again later" });
-//   }
-// };
+  console.log(id);
+
+  const product = await Product.findById(id);
+
+  if (!product) throw new Error("Product not found");
+  else res.json(product);
+});

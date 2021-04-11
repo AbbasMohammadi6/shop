@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import Rating from "@material-ui/lab/Rating";
 import products from "../products";
 import { device } from "../utils/deviceSizes";
@@ -55,10 +56,14 @@ const HomeScreen = () => {
   return (
     <Main>
       {products.map((product) => (
-        <Card>
-          <Img src={product.imgUrl} />
+        <Card key={product._id}>
+          <Link to={`/product/${product._id}`}>
+            <Img src={product.imgUrl} />
+          </Link>
           <P>
-            <strong>{product.name}</strong>
+            <Link to={`/product/${product.id}`}>
+              <strong>{product.name}</strong>
+            </Link>
           </P>
           <RatingContianer>
             <Rating

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import Container from "./Container";
 
 const Div = styled.div`
@@ -38,19 +39,48 @@ const Links = styled.div`
   }
 `;
 
+// const Menu = styled.div`
+//   width: 20px;
+//   display: flex;
+//   flex-direction: column;
+//   margin-left: 1rem;
+
+//   &:hover {
+//     cursor: pointer;
+//   }
+
+//   &:hover span {
+//     background: palevioletred;
+//   }
+
+//   & span {
+//     height: 2px;
+//     width: 25px;
+//     background: #fff;
+//     margin: 3px;
+//     transition: background 200ms;
+//   }
+// `;
+
 const Header = () => {
   return (
     <Div>
       <Container>
         <Nav>
           <Logo>
-            <a href="#">OliShop</a>
+            <Link to="/">OliShop</Link>
           </Logo>
 
           <Links>
-            <a href="#">عضو شدن </a>
-            <a href="#">وارد شدن</a>
+            <Link to="/register">ثبت نام </Link>
+            <Link to="/login">ورود</Link>
           </Links>
+
+          {/* <Menu>
+            <span />
+            <span />
+            <span />
+          </Menu> */}
         </Nav>
       </Container>
     </Div>

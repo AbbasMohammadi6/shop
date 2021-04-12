@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Container from "./Container";
+import { useSelector } from "react-redux";
 
 const Div = styled.div`
   background: #333;
@@ -63,6 +64,8 @@ const Links = styled.div`
 // `;
 
 const Header = () => {
+  const { userInfo } = useSelector((state) => state.userRegister);
+
   return (
     <Div>
       <Container>
@@ -72,8 +75,16 @@ const Header = () => {
           </Logo>
 
           <Links>
-            <Link to="/register">ثبت نام </Link>
-            <Link to="/login">ورود</Link>
+            {userInfo?.user?.name ? (
+              <>
+                <Link to="/me">{userInfo.user.name}</Link>
+              </>
+            ) : (
+              <>
+                <Link to="/register">ثبت نام </Link>
+                <Link to="/login">ورود</Link>
+              </>
+            )}
           </Links>
 
           {/* <Menu>

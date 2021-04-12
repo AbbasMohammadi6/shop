@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import HomeScreen from "./screens/HomeScreen";
 import ProductScreen from "./screens/ProductScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import LoginScreen from "./screens/LoginScreen";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -47,6 +48,7 @@ const App = () => {
             <Route exact path="/" component={HomeScreen} />
             <Route exact path="/product/:id" component={ProductScreen} />
             <Route exact path="/register" component={RegisterScreen} />
+            <Route exact path="/login" component={LoginScreen} />
           </Switch>
         </Container>
       </Main>

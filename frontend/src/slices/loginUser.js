@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { success as registerSuccess } from "./registerUser";
 
 const slice = createSlice({
-  name: "registerUser",
+  name: "loginUser",
 
-  initialState: {},
+  initialState: { userInfo: {} },
 
   reducers: {
     request: (state) => {
@@ -26,7 +27,7 @@ const slice = createSlice({
 
 const { request, success, fail } = slice.actions;
 
-export const registerUser = (user) => async (dispatch) => {
+export const loginUser = (user) => async (dispatch) => {
   dispatch(request());
 
   const config = {
@@ -36,15 +37,14 @@ export const registerUser = (user) => async (dispatch) => {
   };
 
   try {
-    const { data } = await axios.post("/api/users/register", user, config);
+    const { data } = await axios.post("/api/users/login", user, config);
 
     dispatch(success(data));
-
+    dispatch(registerSuccess(data));
     localStorage.setItem("userInfo", JSON.stringify(data));
   } catch (e) {
     dispatch(fail(e.response.data));
   }
 };
 
-export { success };
 export default slice.reducer;

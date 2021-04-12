@@ -1,6 +1,5 @@
 export const errorHandler = (error, req, res, next) => {
-  console.log("INSIDE ERROR HANDLER");
-  console.log(error.message);
+  console.log(error);
 
   res.statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.json(error.message);

@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { device } from "../utils/deviceSizes";
 import { getProduct } from "../slices/getProduct";
 import Loader from "../components/Loader";
+import { add as addToCart } from "../slices/cart";
+import { convertNumsToPersian, getPersianNums } from "../utils/helpers";
 
 const H1 = styled.h1`
   @media ${device.tablet} {
@@ -108,6 +110,10 @@ const ProductScreen = ({ match }) => {
   const dispatch = useDispatch();
   const { loading, product, error } = useSelector((state) => state.getProduct);
 
+  const addToCartHanlder = () => {
+    dispatch(addToCart({ product, qty }));
+  };
+
   useEffect(() => {
     dispatch(getProduct(id));
   }, [id, dispatch]);
@@ -122,14 +128,17 @@ const ProductScreen = ({ match }) => {
         <>
           {product.name && (
             <>
-              <H1>{product.name}</H1>
+              <H1>{convertNumsToPersian(product.name)}</H1>
 
               <Div>
                 <div>
                   <Img src={product.imgUrl} />
                 </div>
                 <BtnContainer>
-                  <button disabled={product.countInStock === 0}>
+                  <button
+                    onClick={addToCartHanlder}
+                    disabled={product.countInStock === 0}
+                  >
                     افزودن به سبد خرید{" "}
                   </button>
                   {product.countInStock ? (
@@ -142,7 +151,9 @@ const ProductScreen = ({ match }) => {
                       </option>
                       {[...new Array(product.countInStock).keys()].map(
                         (item) => (
-                          <option key={item}>{item + 1}</option>
+                          <option key={item} value={item + 1}>
+                            {getPersianNums(item + 1)}
+                          </option>
                         )
                       )}
                     </select>
@@ -152,7 +163,7 @@ const ProductScreen = ({ match }) => {
                 </BtnContainer>
               </Div>
 
-              <P>{product.description}</P>
+              <P>{convertNumsToPersian(product.description)}</P>
             </>
           )}
         </>

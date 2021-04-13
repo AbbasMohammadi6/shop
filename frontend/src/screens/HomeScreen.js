@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { device } from "../utils/deviceSizes";
 import { getAllProducts } from "../slices/getAllProducts";
 import Loader from "../components/Loader";
+import { convertNumsToPersian } from "../utils/helpers";
 
 const Main = styled.div`
   display: grid;
@@ -90,7 +91,7 @@ const HomeScreen = () => {
               </Link>
               <P>
                 <Link to={`/product/${product.id}`}>
-                  <strong>{product.name}</strong>
+                  <strong>{convertNumsToPersian(product.name)}</strong>
                 </Link>
               </P>
               <RatingContianer>

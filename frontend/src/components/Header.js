@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Container from "./Container";
 import { useSelector } from "react-redux";
+import { getPersianNums } from "../utils/helpers";
 
 const Div = styled.div`
   background: #333;
@@ -40,6 +41,36 @@ const Links = styled.div`
   }
 `;
 
+const I = styled.i`
+  padding: 0.7rem;
+  position: relative;
+
+  &:hover span {
+    color: palevioletred;
+    background: white;
+    width: 20px;
+    height: 20px;
+    line-height: 26px;
+  }
+
+  & span {
+    font-family: "Shabnam", sans-serif;
+    transition: all 300ms;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 17px;
+    height: 17px;
+    line-height: 20px;
+    text-align: center;
+
+    display: inline-block;
+    background: palevioletred;
+    border-radius: 100%;
+    color: white;
+  }
+`;
+
 // const Menu = styled.div`
 //   width: 20px;
 //   display: flex;
@@ -65,6 +96,7 @@ const Links = styled.div`
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.userRegister);
+  const { products } = useSelector((state) => state.cart);
 
   return (
     <Div>
@@ -75,6 +107,15 @@ const Header = () => {
           </Logo>
 
           <Links>
+            <Link to="/cart">
+              <I className="fas fa-shopping-cart">
+                {products.length ? (
+                  <span>{getPersianNums(products.length)}</span>
+                ) : (
+                  ""
+                )}
+              </I>
+            </Link>
             {userInfo?.user?.name ? (
               <>
                 <Link to="/me">{userInfo.user.name}</Link>

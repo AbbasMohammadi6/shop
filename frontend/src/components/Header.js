@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Container from "./Container";
@@ -30,10 +30,30 @@ const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+
+  @media (max-width: 700px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const Links = styled.div`
   color: #fff;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: height 300ms, z-index 200ms;
+
+  @media (max-width: 700px) {
+    z-index: ${({ isOpen }) => (isOpen ? "0" : "-10")};
+    height: ${({ isOpen }) => (isOpen ? "3rem" : "0")};
+  }
+
+  @media (max-width: 350px) {
+    flex-direction: column;
+    height: ${({ isOpen }) => (isOpen ? "12rem" : "0")};
+  }
 
   & a {
     padding: 1rem;
@@ -63,38 +83,51 @@ const I = styled.i`
     height: 17px;
     line-height: 20px;
     text-align: center;
-
     display: inline-block;
     background: palevioletred;
     border-radius: 100%;
     color: white;
+
+    /* If I don't do this, the number of cart items that is above the cart icon, will get showed under the navbar */
+    @media (max-width: 350px) {
+      background: ${({ isOpen }) => (isOpen ? "palevioletred" : "white")};
+    }
   }
 `;
 
-// const Menu = styled.div`
-//   width: 20px;
-//   display: flex;
-//   flex-direction: column;
-//   margin-left: 1rem;
+const Menu = styled.div`
+  width: 20px;
+  display: none;
+  flex-direction: column;
+  margin-left: 1rem;
+  position: absolute;
+  left: 0;
+  top: 2rem;
 
-//   &:hover {
-//     cursor: pointer;
-//   }
+  @media (max-width: 700px) {
+    display: flex;
+  }
 
-//   &:hover span {
-//     background: palevioletred;
-//   }
+  &:hover {
+    cursor: pointer;
+  }
 
-//   & span {
-//     height: 2px;
-//     width: 25px;
-//     background: #fff;
-//     margin: 3px;
-//     transition: background 200ms;
-//   }
-// `;
+  &:hover span {
+    background: palevioletred;
+  }
+
+  & span {
+    height: 2px;
+    width: 25px;
+    background: #fff;
+    margin: 3px;
+    transition: background 200ms;
+  }
+`;
 
 const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const { userInfo } = useSelector((state) => state.userRegister);
   const { products } = useSelector((state) => state.cart);
 
@@ -106,9 +139,9 @@ const Header = () => {
             <Link to="/">OliShop</Link>
           </Logo>
 
-          <Links>
+          <Links isOpen={isOpen}>
             <Link to="/cart">
-              <I className="fas fa-shopping-cart">
+              <I className="fas fa-shopping-cart" isOpen={isOpen}>
                 {products.length ? (
                   <span>{getPersianNums(products.length)}</span>
                 ) : (
@@ -128,11 +161,11 @@ const Header = () => {
             )}
           </Links>
 
-          {/* <Menu>
+          <Menu onClick={() => setIsOpen(!isOpen)}>
             <span />
             <span />
             <span />
-          </Menu> */}
+          </Menu>
         </Nav>
       </Container>
     </Div>

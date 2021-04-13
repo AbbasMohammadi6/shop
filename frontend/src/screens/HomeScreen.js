@@ -8,6 +8,7 @@ import { getAllProducts } from "../slices/getAllProducts";
 import Loader from "../components/Loader";
 import { convertNumsToPersian } from "../utils/helpers";
 
+/* Todo: Change all of the breakpoints the custome numbers (where it starts to look bad) */
 const Main = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -22,7 +23,7 @@ const Main = styled.div`
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media ${device.mobileM} {
+  @media (max-width: 450px) {
     grid-template-columns: repeat(1, 1fr);
   }
 `;

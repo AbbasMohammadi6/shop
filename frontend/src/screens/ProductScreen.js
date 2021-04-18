@@ -103,7 +103,7 @@ const BtnContainer = styled.div`
 `;
 
 const ProductScreen = ({ match }) => {
-  const [qty, setQty] = useState(0);
+  const [qty, setQty] = useState(1);
 
   const id = match.params.id;
 
@@ -146,7 +146,7 @@ const ProductScreen = ({ match }) => {
                       value={qty}
                       onChange={(e) => setQty(e.target.value)}
                     >
-                      <option value={0} disabled={true}>
+                      <option value={1} disabled={true}>
                         تعداد
                       </option>
                       {[...new Array(product.countInStock).keys()].map(

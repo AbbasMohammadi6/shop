@@ -13,7 +13,7 @@ app.use(express.json());
 dotenv.config();
 dbConnect();
 
-if (process.env.NODE_ENV !== production) app.use(morgan("tiny"));
+if (process.env.NODE_ENV !== "production") app.use(morgan("tiny"));
 
 app.use("/api/products/", productRouter);
 app.use("/api/users/", userRouter);

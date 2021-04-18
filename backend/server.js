@@ -18,9 +18,6 @@ if (process.env.NODE_ENV !== "production") app.use(morgan("tiny"));
 app.use("/api/products/", productRouter);
 app.use("/api/users/", userRouter);
 
-app.use(notFound);
-app.use(errorHandler);
-
 const __dirname = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
@@ -34,6 +31,9 @@ if (process.env.NODE_ENV === "production") {
     res.send("API is running....");
   });
 }
+
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 

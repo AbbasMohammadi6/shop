@@ -135,7 +135,7 @@ const Header = () => {
       <Container>
         <Nav>
           <Logo>
-            <Link to="/">OliShop</Link>
+            <Link to="/">eShop</Link>
           </Logo>
 
           <Links isOpen={isOpen}>

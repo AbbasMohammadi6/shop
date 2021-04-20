@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { device } from "../utils/deviceSizes";
 import { getAllProducts } from "../slices/getAllProducts";
 import Loader from "../components/Loader";
-import { convertNumsToPersian } from "../utils/helpers";
+import { convertNumsToPersian, getPersianPrice } from "../utils/helpers";
+import Toast from "../components/Toast";
 
 /* Todo: Change all of the breakpoints the custome numbers (where it starts to look bad) */
 const Main = styled.div`
@@ -31,7 +32,7 @@ const Main = styled.div`
 const Card = styled.div`
   border: 1px solid #ccc;
   padding: 1rem;
-  padding-bottom: 2rem;
+  padding-bottom: 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,12 +49,15 @@ const P = styled.p`
   margin-top: 0.5rem;
 `;
 
-const RatingContianer = styled.div`
-  direction: ltr;
+const CardFooter = styled.div`
   position: absolute;
   bottom: 5px;
   right: 50%;
   transform: translateX(50%);
+`;
+
+const RatingContianer = styled.div`
+  direction: ltr;
 `;
 
 const HomeScreen = () => {
@@ -65,16 +69,6 @@ const HomeScreen = () => {
 
   useEffect(() => {
     dispatch(getAllProducts());
-    // console.log("RUNNING....");
-    // (async function () {
-    //   try {
-    //     const products = await axios.get("/api/products");
-
-    //     console.log(products);
-    //   } catch (e) {
-    //     console.log(e.response);
-    //   }
-    // })();
   }, [dispatch]);
 
   return (
@@ -90,22 +84,29 @@ const HomeScreen = () => {
               <Link to={`/product/${product._id}`}>
                 <Img src={product.imgUrl} />
               </Link>
+
               <P>
                 <Link to={`/product/${product.id}`}>
                   <strong>{convertNumsToPersian(product.name)}</strong>
                 </Link>
               </P>
-              <RatingContianer>
-                <Rating
-                  name="read-only"
-                  value={product.rating}
-                  readOnly
-                  size="small"
-                  precision={0.5}
-                />
-              </RatingContianer>
+
+              <CardFooter>
+                <P>قیمت: {getPersianPrice(product.price)}</P>
+                <RatingContianer>
+                  <Rating
+                    name="read-only"
+                    value={product.rating}
+                    readOnly
+                    size="small"
+                    precision={0.5}
+                  />
+                </RatingContianer>
+              </CardFooter>
             </Card>
           ))}
+
+          <Toast />
         </Main>
       )}
     </>

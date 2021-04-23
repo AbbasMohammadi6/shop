@@ -9,6 +9,9 @@ import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from "./screens/LoginScreen";
 import CartScreen from "./screens/CartScreen";
 import Chat from "./components/Chat";
+import { useDispatch } from "react-redux";
+import { addUsers, addOneUser, removeUser } from "./slices/chatUsers";
+import socket from "./socket";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -40,6 +43,21 @@ const Main = styled.main`
 `;
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  socket.on("users", (users) => {
+    dispatch(addUsers(users));
+  });
+
+  socket.on("user connected", (user) => {
+    dispatch(addOneUser(user));
+  });
+
+  socket.on("user disconnected", (user) => {
+    console.log(user);
+    dispatch(removeUser(user));
+  });
+
   return (
     <>
       <GlobalStyle />

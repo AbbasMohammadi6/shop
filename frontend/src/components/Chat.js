@@ -45,6 +45,7 @@ const ChatWindow = styled.div`
 
 const Chat = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleOpenChat = () => {
     setIsOpen(!isOpen);
@@ -58,13 +59,19 @@ const Chat = () => {
     }
   }, [isOpen]);
 
-  const handleSend = () => {};
+  const handleSend = (e) => {
+    e.preventDefault();
+    socket.emit("chat message", { message, from: socket.id, to: "admin" });
+  };
 
   return (
     <Main>
       <ChatWindow isOpen={isOpen}>
         <form>
-          <textarea></textarea>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          ></textarea>
           <button onClick={handleSend}>ارسال</button>
         </form>
       </ChatWindow>

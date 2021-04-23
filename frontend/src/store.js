@@ -4,6 +4,7 @@ import getProductReducer from "./slices/getProduct";
 import userRegisterReducer from "./slices/registerUser";
 import userLoginReducer from "./slices/loginUser";
 import cartReducer from "./slices/cart";
+import chatUsersReducer from "./slices/chatUsers";
 
 const userInfo = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
@@ -25,6 +26,7 @@ const store = configureStore({
     userRegister: userRegisterReducer,
     userLogin: userLoginReducer,
     cart: cartReducer,
+    chatUsers: chatUsersReducer,
   },
 });
 

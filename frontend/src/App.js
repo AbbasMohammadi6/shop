@@ -8,6 +8,7 @@ import ProductScreen from "./screens/ProductScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from "./screens/LoginScreen";
 import CartScreen from "./screens/CartScreen";
+import Chat from "./components/Chat";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -52,6 +53,8 @@ const App = () => {
             <Route exact path="/login" component={LoginScreen} />
             <Route exact path="/cart" component={CartScreen} />
           </Switch>
+
+          <Chat />
         </Container>
       </Main>
     </>

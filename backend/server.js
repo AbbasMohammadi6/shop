@@ -6,8 +6,25 @@ import dbConnect from "./dbConnect.js";
 import { errorHandler, notFound } from "./middlewares/errorHandler.js";
 import productRouter from "./routes/productRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import http from "http";
+import { Server as socketServer } from "socket.io";
 
 const app = express();
+
+const httpServer = http.createServer(app);
+const io = new socketServer(httpServer, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("A USER WAS CONNECTED");
+
+  socket.on('disconnect', () => console.log('a user was disconnected'));
+});
+
 app.use(express.json());
 
 dotenv.config();
@@ -37,6 +54,6 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT;
 
-app.listen(PORT, () =>
+httpServer.listen(PORT, () =>
   console.log(`Server is running on port ${PORT}`.yellow.bold)
 );

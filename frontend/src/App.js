@@ -12,6 +12,7 @@ import Chat from "./components/Chat";
 import { useDispatch, useSelector } from "react-redux";
 import { addUsers, addOneUser, removeUser } from "./slices/chatUsers";
 import socket from "./socket";
+import ChatScreen from "./screens/ChatScreen";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -47,15 +48,16 @@ const App = () => {
   const { userInfo } = useSelector((state) => state.userRegister);
 
   socket.on("users", (users) => {
+    console.log("HERE IS THE LIST OF THE USER:", users.length);
     dispatch(addUsers(users));
   });
 
   socket.on("user connected", (user) => {
+    console.log("A USER WAS CONNECTED, FROM FRONTEND");
     dispatch(addOneUser(user));
   });
 
   socket.on("user disconnected", (user) => {
-    console.log(user);
     dispatch(removeUser(user));
   });
 
@@ -78,6 +80,7 @@ const App = () => {
             <Route exact path="/register" component={RegisterScreen} />
             <Route exact path="/login" component={LoginScreen} />
             <Route exact path="/cart" component={CartScreen} />
+            <Route exact path="/chat" component={ChatScreen} />
           </Switch>
 
           <Chat />

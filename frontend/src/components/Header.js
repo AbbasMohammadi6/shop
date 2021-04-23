@@ -151,6 +151,7 @@ const Header = () => {
             {userInfo?.user?.name ? (
               <>
                 <Link to="/me">{userInfo.user.name}</Link>
+                {userInfo.user.isAdmin && <Link to="/chat">چت</Link>}
               </>
             ) : (
               <>

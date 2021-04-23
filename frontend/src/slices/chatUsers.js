@@ -8,13 +8,11 @@ const slice = createSlice({
   reducers: {
     addUsers: (state, action) => {
       const users = action.payload;
-      console.log("THIS IS USERS", users);
       state.users = [...users];
     },
 
     addOneUser: (state, action) => {
       const user = action.payload;
-      console.log(user);
       state.users.push(user);
     },
 

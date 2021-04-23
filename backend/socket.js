@@ -34,7 +34,7 @@ const runSocket = () => {
       });
     }
     // send a list of connected users to the user that was just connected
-    socket.to("admins room").emit("users", users);
+    if (isAdmin) socket.emit("users", users);
 
     /** Think of something so you could send users list only to admins not all of the users that are in chat **/
 

@@ -13,7 +13,17 @@ const runSocket = () => {
   // [{from, to, message}]
 
   io.on("connection", (socket) => {
-    console.log("A USER WAS CONNECTED");
+    const isAdmin = socket.handshake.auth.isAdmin;
+
+    isAdmin
+      ? console.log("a admin joined the chat")
+      : console.log("A USER WAS CONNECTED");
+
+    if (isAdmin) {
+      socket.join("admins room");
+      // io.to('some room').emit('some event');
+      // socket.to('some room').emit('some event');
+    }
 
     // We are looping over the io.of("/").sockets object, which is a Map of all currently connected Socket instances, indexed by ID.
     const users = [];
@@ -24,12 +34,12 @@ const runSocket = () => {
       });
     }
     // send a list of connected users to the user that was just connected
-    socket.emit("users", users);
+    socket.to("admins room").emit("users", users);
 
     /** Think of something so you could send users list only to admins not all of the users that are in chat **/
 
     // send the new user to other users
-    socket.broadcast.emit("user connected", {
+    socket.broadcast.to("admins room").emit("user connected", {
       userID: socket.id,
       // username: socket.username,
     });
@@ -37,12 +47,14 @@ const runSocket = () => {
     socket.on("chat message", ({ message, from, to }) => {
       /** Todo: send this to admins only **/
       // messages.push({ from: socket.id, message });
-      socket.broadcast.emit("chat message", message);
+      socket.broadcast.to("admins room").emit("chat message", message);
     });
 
     socket.on("disconnect", () => {
       /** Todo: send this only to admins not all of the users, maybe create a room or something  **/
-      socket.broadcast.emit("user disconnected", { userID: socket.id });
+      socket.broadcast
+        .to("admins room")
+        .emit("user disconnected", { userID: socket.id });
 
       // messages = messages.filter((msg) => msg.from !== socket.id);
 

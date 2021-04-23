@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { Switch, Route } from "react-router-dom";
 import Container from "./components/Container";
@@ -9,7 +9,7 @@ import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from "./screens/LoginScreen";
 import CartScreen from "./screens/CartScreen";
 import Chat from "./components/Chat";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUsers, addOneUser, removeUser } from "./slices/chatUsers";
 import socket from "./socket";
 
@@ -44,6 +44,7 @@ const Main = styled.main`
 
 const App = () => {
   const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.userRegister);
 
   socket.on("users", (users) => {
     dispatch(addUsers(users));
@@ -57,6 +58,13 @@ const App = () => {
     console.log(user);
     dispatch(removeUser(user));
   });
+
+  useEffect(() => {
+    if (userInfo.user?.name && userInfo.user.isAdmin) {
+      socket.auth = { isAdmin: true };
+      socket.connect();
+    }
+  }, [userInfo]);
 
   return (
     <>

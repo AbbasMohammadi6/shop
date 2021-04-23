@@ -7,28 +7,17 @@ import { errorHandler, notFound } from "./middlewares/errorHandler.js";
 import productRouter from "./routes/productRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import http from "http";
-import { Server as socketServer } from "socket.io";
+import runSocket from "./socket.js";
 
 const app = express();
 
-const httpServer = http.createServer(app);
-const io = new socketServer(httpServer, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-  },
-});
-
-io.on("connection", (socket) => {
-  console.log("A USER WAS CONNECTED");
-
-  socket.on('disconnect', () => console.log('a user was disconnected'));
-});
-
-app.use(express.json());
-
 dotenv.config();
 dbConnect();
+
+export const httpServer = http.createServer(app);
+runSocket();
+
+app.use(express.json());
 
 if (process.env.NODE_ENV !== "production") app.use(morgan("tiny"));
 

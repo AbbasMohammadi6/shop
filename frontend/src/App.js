@@ -48,17 +48,21 @@ const App = () => {
   const { userInfo } = useSelector((state) => state.userRegister);
 
   socket.on("users", (users) => {
-    console.log("HERE IS THE LIST OF THE USER:", users.length);
+    console.log("111Users", users.length);
     dispatch(addUsers(users));
   });
 
   socket.on("user connected", (user) => {
-    console.log("A USER WAS CONNECTED, FROM FRONTEND");
+    console.log("222User", user);
     dispatch(addOneUser(user));
   });
 
   socket.on("user disconnected", (user) => {
     dispatch(removeUser(user));
+  });
+
+  socket.on("private message", (message) => {
+    console.log(message);
   });
 
   useEffect(() => {

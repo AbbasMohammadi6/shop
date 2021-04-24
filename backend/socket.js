@@ -30,6 +30,7 @@ const runSocket = () => {
     for (let [id, socket] of io.of("/").sockets) {
       users.push({
         userID: id,
+        isAdmin,
         // username: socket.username,
       });
     }
@@ -41,6 +42,7 @@ const runSocket = () => {
     // send the new user to other users
     socket.broadcast.to("admins room").emit("user connected", {
       userID: socket.id,
+      isAdmin,
       // username: socket.username,
     });
 
@@ -48,6 +50,10 @@ const runSocket = () => {
       /** Todo: send this to admins only **/
       // messages.push({ from: socket.id, message });
       socket.broadcast.to("admins room").emit("chat message", message);
+    });
+
+    socket.on("private message", ({ message, to }) => {
+      socket.to(to).emit("private message", message);
     });
 
     socket.on("disconnect", () => {

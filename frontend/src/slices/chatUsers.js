@@ -12,6 +12,7 @@ const slice = createSlice({
     },
 
     addOneUser: (state, action) => {
+      console.log("Inside addOneUser", action.payload);
       const user = action.payload;
       state.users.push(user);
     },

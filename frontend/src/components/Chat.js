@@ -46,6 +46,7 @@ const ChatWindow = styled.div`
 const MsgContainer = styled.div`
   border: 1px solid #dadada;
   height: 50%;
+  overflow: scroll;
 `;
 
 const Li = styled.li`
@@ -77,6 +78,7 @@ const Chat = () => {
     });
     /** Todo: see if the message was recieved by the server, then add this to msgs **/
     setMsgs(msgs.concat({ text: currentMsg, fromSelf: true }));
+    setCurrentMsg("");
   };
 
   socket.on("private message", (message) => {

@@ -8,6 +8,7 @@ const slice = createSlice({
   reducers: {
     addUsers: (state, action) => {
       const users = action.payload;
+      console.log("Inside slice, and users,", users.length);
       state.users = [...users];
     },
 
@@ -21,8 +22,12 @@ const slice = createSlice({
       const { userID } = action.payload;
       state.users = state.users.filter((user) => userID !== user.userID);
     },
+
+    reset: (state) => {
+      state.users = [];
+    },
   },
 });
 
-export const { addUsers, addOneUser, removeUser } = slice.actions;
+export const { addUsers, addOneUser, removeUser, reset } = slice.actions;
 export default slice.reducer;

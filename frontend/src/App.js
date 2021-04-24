@@ -9,8 +9,7 @@ import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from "./screens/LoginScreen";
 import CartScreen from "./screens/CartScreen";
 import Chat from "./components/Chat";
-import { useDispatch, useSelector } from "react-redux";
-import { addUsers, addOneUser, removeUser } from "./slices/chatUsers";
+import { useSelector } from "react-redux";
 import socket from "./socket";
 import ChatScreen from "./screens/ChatScreen";
 
@@ -44,22 +43,7 @@ const Main = styled.main`
 `;
 
 const App = () => {
-  const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.userRegister);
-
-  socket.on("users", (users) => {
-    console.log("111Users", users.length);
-    dispatch(addUsers(users));
-  });
-
-  socket.on("user connected", (user) => {
-    console.log("222User", user);
-    dispatch(addOneUser(user));
-  });
-
-  socket.on("user disconnected", (user) => {
-    dispatch(removeUser(user));
-  });
 
   useEffect(() => {
     if (userInfo.user?.name && userInfo.user.isAdmin) {

@@ -12,14 +12,19 @@ const runSocket = () => {
   let messages = [];
   // [{from, to, message}]
 
+  let admins = [];
+
   io.on("connection", (socket) => {
     const isAdmin = socket.handshake.auth.isAdmin;
 
+    console.log("*******************");
+
     isAdmin
-      ? console.log("a admin joined the chat")
-      : console.log("A USER WAS CONNECTED");
+      ? console.log("a admin joined the chat", socket.id)
+      : console.log("A USER WAS CONNECTED", socket.id);
 
     if (isAdmin) {
+      admins.push(socket.id);
       socket.join("admins room");
       // io.to('some room').emit('some event');
       // socket.to('some room').emit('some event');
@@ -30,12 +35,15 @@ const runSocket = () => {
     for (let [id, socket] of io.of("/").sockets) {
       users.push({
         userID: id,
-        isAdmin,
+        isAdmin: admins.includes(id),
         // username: socket.username,
       });
     }
     // send a list of connected users to the user that was just connected
-    if (isAdmin) socket.emit("users", users);
+    if (isAdmin) {
+      console.log("HERE ARE THE USERS:", users);
+      socket.emit("users", users);
+    }
 
     /** Think of something so you could send users list only to admins not all of the users that are in chat **/
 
@@ -59,6 +67,10 @@ const runSocket = () => {
     });
 
     socket.on("disconnect", () => {
+      if (admins.includes(socket.id)) {
+        admins = admins.filter((a) => a !== socket.id);
+      }
+
       /** Todo: send this only to admins not all of the users, maybe create a room or something  **/
       socket.broadcast
         .to("admins room")
@@ -66,7 +78,9 @@ const runSocket = () => {
 
       // messages = messages.filter((msg) => msg.from !== socket.id);
 
-      console.log("a user was disconnected");
+      isAdmin
+        ? console.log("An admin was disconnected", socket.id)
+        : console.log("a user was disconnected", socket.id);
     });
   });
 };

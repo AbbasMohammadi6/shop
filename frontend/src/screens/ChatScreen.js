@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import socket from "../socket";
+import { reset, addUsers, addOneUser, removeUser } from "../slices/chatUsers";
 
 const Main = styled.div`
   display: flex;
@@ -40,6 +41,7 @@ const Chats = styled.div`
 
 const MsgLi = styled.li`
   background: ${({ fromSelf }) => (fromSelf ? "springgreen" : "tomato")};
+  width: 30rem;
 `;
 
 const Form = styled.form`
@@ -59,13 +61,16 @@ const Form = styled.form`
   }
 `;
 
-const ChatScreen = () => {
+const ChatScreen = ({ history }) => {
+  socket.removeAllListeners();
+
   const [currentMsg, setCurrentMsg] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
   const [msgs, setMsgs] = useState([]);
 
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state.chatUsers);
+  const { userInfo } = useSelector((state) => state.userRegister);
 
   console.log("Chat Users", users.length);
 
@@ -80,6 +85,30 @@ const ChatScreen = () => {
 
   socket.on("chat message", ({ message, from }) => {
     setMsgs(msgs.concat({ message, from, to: "admin" }));
+  });
+
+  useEffect(() => {
+    console.log("CONNECTED:", socket.connected);
+    if (!userInfo?.user?.name) history.push("/");
+    else if (!socket.connected) {
+      dispatch(reset());
+      socket.auth = { isAdmin: true };
+      socket.connect();
+    }
+  }, [history, userInfo, dispatch]);
+
+  socket.on("users", (users) => {
+    console.log("111Users", users.length);
+    dispatch(addUsers(users));
+  });
+
+  socket.on("user connected", (user) => {
+    console.log("222User", user);
+    dispatch(addOneUser(user));
+  });
+
+  socket.on("user disconnected", (user) => {
+    dispatch(removeUser(user));
   });
 
   return (

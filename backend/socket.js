@@ -46,10 +46,12 @@ const runSocket = () => {
       // username: socket.username,
     });
 
-    socket.on("chat message", ({ message, from, to }) => {
+    socket.on("chat message", ({ message, from }) => {
       /** Todo: send this to admins only **/
       // messages.push({ from: socket.id, message });
-      socket.broadcast.to("admins room").emit("chat message", message);
+      socket.broadcast
+        .to("admins room")
+        .emit("chat message", { message, from });
     });
 
     socket.on("private message", ({ message, to }) => {

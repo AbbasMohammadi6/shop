@@ -61,10 +61,6 @@ const App = () => {
     dispatch(removeUser(user));
   });
 
-  socket.on("private message", (message) => {
-    console.log(message);
-  });
-
   useEffect(() => {
     if (userInfo.user?.name && userInfo.user.isAdmin) {
       socket.auth = { isAdmin: true };

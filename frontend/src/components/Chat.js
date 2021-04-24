@@ -32,7 +32,7 @@ const ChatWindow = styled.div`
   display: ${({ isOpen }) => (isOpen ? "block" : "none")};
 
   & form {
-    height: 100%;
+    height: 50%;
     display: flex;
     flex-direction: column;
 
@@ -43,9 +43,19 @@ const ChatWindow = styled.div`
   }
 `;
 
+const MsgContainer = styled.div`
+  border: 1px solid #dadada;
+  height: 50%;
+`;
+
+const Li = styled.li`
+  background: ${({ fromSelf }) => (fromSelf ? "springgreen" : "tomato")};
+`;
+
 const Chat = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [message, setMessage] = useState("");
+  const [currentMsg, setCurrentMsg] = useState("");
+  const [msgs, setMsgs] = useState([]);
 
   const handleOpenChat = () => {
     setIsOpen(!isOpen);
@@ -61,16 +71,35 @@ const Chat = () => {
 
   const handleSend = (e) => {
     e.preventDefault();
-    socket.emit("chat message", { message, from: socket.id, to: "admin" });
+    socket.emit("chat message", {
+      message: currentMsg,
+      from: socket.id,
+    });
+    /** Todo: see if the message was recieved by the server, then add this to msgs **/
+    setMsgs(msgs.concat({ text: currentMsg, fromSelf: true }));
   };
+
+  socket.on("private message", (message) => {
+    console.log(message);
+    setMsgs(msgs.concat({ text: message, fromSelf: false }));
+  });
 
   return (
     <Main>
       <ChatWindow isOpen={isOpen}>
+        <MsgContainer>
+          <ul>
+            {msgs.map((msg, idx) => (
+              <Li key={idx} fromSelf={msg.fromSelf}>
+                {msg.text}
+              </Li>
+            ))}
+          </ul>
+        </MsgContainer>
         <form>
           <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            value={currentMsg}
+            onChange={(e) => setCurrentMsg(e.target.value)}
           ></textarea>
           <button onClick={handleSend}>ارسال</button>
         </form>

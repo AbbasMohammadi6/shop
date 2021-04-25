@@ -11,7 +11,7 @@ const runSocket = () => {
 
   // save messages to send for admin that join the chat after that users have send messages.
   let messages = [];
-  // [{message, from, to}]
+  // [{message, from, to, isAdmin}]
 
   // maybe there is more than one admin
   let admins = [];
@@ -25,11 +25,13 @@ const runSocket = () => {
       ? console.log("a admin joined the chat", socket.id)
       : console.log("A USER WAS CONNECTED", socket.id);
 
+    // If this socket is admin, add them to admins array
     if (isAdmin) {
       admins.push(socket.id);
       socket.join("admins room");
     }
 
+    // If this socket is not admin and there is no admin connected, send a message to them
     if (!isAdmin && !admins.length) {
       socket.emit("private message", "متأسفانه هنوز ادمینی وارد چت نشده است");
     }
@@ -46,11 +48,10 @@ const runSocket = () => {
     if (isAdmin) {
       socket.emit("users", users);
       socket.emit("messages", messages);
+      console.log(messages);
     }
 
-    /** Think of something so you could send users list only to admins not all of the users that are in chat **/
-
-    // send the new user to other users
+    // send the new socket to admins
     socket.broadcast.to("admins room").emit("user connected", {
       userID: socket.id,
       isAdmin,
@@ -63,26 +64,27 @@ const runSocket = () => {
         .emit("chat message", { message, from });
     });
 
-    socket.on("private message", ({ message, to }) => {
-      messages.push({ message, to });
+    socket.on("private message", ({ message, to, from }) => {
+      // save isAdmin in each message becuase socket ids change on each connection so we don't which message was sent by a user.
+      messages.push({ message, to, isAdmin: admins.includes(from) });
       socket.to(to).emit("private message", message);
     });
 
     socket.on("disconnect", () => {
-      if (admins.includes(socket.id)) {
+      if (isAdmin) {
         admins = admins.filter((a) => a !== socket.id);
       }
 
-      messages = messages.filter(
-        (m) => m.to !== socket.id && m.from !== socket.id
-      );
+      // Don't delete this admin's messages, because maybe there is other admins and they want to continue the chat
+      if (!isAdmin) {
+        messages = messages.filter(
+          (m) => m.to !== socket.id && m.from !== socket.id
+        );
+      }
 
-      /** Todo: send this only to admins not all of the users, maybe create a room or something  **/
       socket.broadcast
         .to("admins room")
         .emit("user disconnected", { userID: socket.id });
-
-      // messages = messages.filter((msg) => msg.from !== socket.id);
 
       isAdmin
         ? console.log("An admin was disconnected", socket.id)

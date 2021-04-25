@@ -136,7 +136,6 @@ const Chat = () => {
   const [msgs, setMsgs] = useState([]);
 
   const handleOpenChat = (e) => {
-    e.preventDefault();
     setIsOpen(!isOpen);
     setMsgs([]);
   };

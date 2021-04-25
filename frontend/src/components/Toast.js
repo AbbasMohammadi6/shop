@@ -25,10 +25,10 @@ const Main = styled.div`
 
   & span {
     position: absolute;
-    right: 4px;
-    top: -6px;
+    right: 0;
+    top: 0;
     font-size: 0.9rem;
-    padding: 3px;
+    padding: 0 7px;
     transition: color 200ms;
 
     &:hover {

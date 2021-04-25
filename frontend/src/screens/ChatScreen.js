@@ -4,6 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import socket from "../socket";
 import { reset, addUsers, addOneUser, removeUser } from "../slices/chatUsers";
 import Message from "../components/Message";
+import {
+  addOneMessage,
+  addMessages,
+  removeMessage,
+} from "../slices/chatMessages";
 
 const Main = styled.div`
   display: flex;
@@ -19,7 +24,7 @@ const Aside = styled.aside`
 `;
 
 const UserLi = styled.li`
-  background: ${({ currentUser }) => currentUser && "springgreen !important"};
+  background: ${({ currentUser }) => currentUser && "skyblue !important"};
   border-radius: 0.8rem;
   padding: 0.5rem;
   text-align: center;
@@ -119,7 +124,7 @@ const Form = styled.form`
       width: 12%;
     }
 
-    &:hover:not[disabled] {
+    &:hover:enabled {
       background: palevioletred;
       color: white;
     }
@@ -136,17 +141,21 @@ const ChatScreen = ({ history }) => {
 
   const [currentMsg, setCurrentMsg] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
-  const [msgs, setMsgs] = useState([]);
 
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state.chatUsers);
+  const { messages } = useSelector((state) => state.chatMessages);
   const { userInfo } = useSelector((state) => state.userRegister);
 
   const handleSend = (e) => {
     e.preventDefault();
-    socket.emit("private message", { message: currentMsg, to: currentUser });
-    setMsgs(
-      msgs.concat({ message: currentMsg, from: socket.id, to: currentUser })
+    socket.emit("private message", {
+      message: currentMsg,
+      to: currentUser,
+      from: socket.id,
+    });
+    dispatch(
+      addOneMessage({ message: currentMsg, from: socket.id, to: currentUser })
     );
     setCurrentMsg("");
   };
@@ -160,7 +169,7 @@ const ChatScreen = ({ history }) => {
   };
 
   socket.on("chat message", ({ message, from }) => {
-    setMsgs(msgs.concat({ message, from, to: "admin" }));
+    dispatch(addOneMessage({ message, from, to: "admin" }));
   });
 
   useEffect(() => {
@@ -177,7 +186,7 @@ const ChatScreen = ({ history }) => {
   });
 
   socket.on("messages", (messages) => {
-    setMsgs(messages);
+    dispatch(addMessages(messages));
   });
 
   socket.on("user connected", (user) => {
@@ -186,7 +195,7 @@ const ChatScreen = ({ history }) => {
 
   socket.on("user disconnected", (user) => {
     dispatch(removeUser(user));
-    setMsgs(msgs.filter((m) => m.from !== user.userID && m.to !== user.userID));
+    dispatch(removeMessage(user));
   });
 
   return (
@@ -215,12 +224,15 @@ const ChatScreen = ({ history }) => {
 
           <Chats>
             <ul>
-              {msgs.map(({ message, from, to }, idx) => {
+              {messages.map(({ message, from, to, isAdmin }, idx) => {
                 if (from === currentUser || to === currentUser)
                   return (
-                    <MsgLi key={idx} fromSelf={from === socket.id}>
+                    <MsgLi key={idx} fromSelf={from === socket.id || isAdmin}>
                       {message}
-                      <span>{from === socket.id ? "admin" : "user"}</span>
+                      {message.isAdmin}
+                      <span>
+                        {from === socket.id || isAdmin ? "admin" : "user"}
+                      </span>
                     </MsgLi>
                   );
                 else return null;

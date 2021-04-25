@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { Switch, Route } from "react-router-dom";
 import Container from "./components/Container";
@@ -10,7 +10,6 @@ import LoginScreen from "./screens/LoginScreen";
 import CartScreen from "./screens/CartScreen";
 import Chat from "./components/Chat";
 import { useSelector } from "react-redux";
-import socket from "./socket";
 import ChatScreen from "./screens/ChatScreen";
 
 const GlobalStyle = createGlobalStyle`
@@ -45,13 +44,6 @@ const Main = styled.main`
 const App = () => {
   const { userInfo } = useSelector((state) => state.userRegister);
 
-  useEffect(() => {
-    if (userInfo.user?.name && userInfo.user.isAdmin) {
-      socket.auth = { isAdmin: true };
-      socket.connect();
-    }
-  }, [userInfo]);
-
   return (
     <>
       <GlobalStyle />
@@ -67,7 +59,7 @@ const App = () => {
             <Route exact path="/chat" component={ChatScreen} />
           </Switch>
 
-          <Chat />
+          {!userInfo.user?.isAdmin && <Chat />}
         </Container>
       </Main>
     </>

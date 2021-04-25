@@ -54,14 +54,14 @@ const ChatWindow = styled.div`
     width: 100%;
     display: flex;
 
-    & textarea,
+    & input,
     & button {
       border: none;
       outline: none;
       flex: 1;
     }
 
-    & textarea {
+    & input {
       resize: none;
       border-top: 1px solid #dadada;
       flex: 5;
@@ -116,7 +116,21 @@ const MsgContainer = styled.div`
   }
 `;
 
+const Li = styled.li`
+  list-style: none;
+  background: ${({ fromSelf }) => (fromSelf ? "springgreen" : "tomato")};
+  margin: 0.3rem;
+  margin-right: ${({ fromSelf }) => (fromSelf ? "auto" : "0.3rem")};
+  font-size: 0.8rem;
+  padding: 0.3rem;
+  width: 10rem;
+  border-radius: 0.3rem;
+`;
+
 const Chat = () => {
+  // this is very important, if you remove it, each event gets fired multiple times, becauce it sets an event listener on each render
+  socket.removeAllListeners();
+
   const [isOpen, setIsOpen] = useState(false);
   const [currentMsg, setCurrentMsg] = useState("");
   const [msgs, setMsgs] = useState([]);
@@ -124,6 +138,7 @@ const Chat = () => {
   const handleOpenChat = (e) => {
     e.preventDefault();
     setIsOpen(!isOpen);
+    setMsgs([]);
   };
 
   useEffect(() => {
@@ -146,7 +161,6 @@ const Chat = () => {
   };
 
   socket.on("private message", (message) => {
-    console.log(message);
     setMsgs(msgs.concat({ text: message, fromSelf: false }));
   });
 
@@ -159,29 +173,21 @@ const Chat = () => {
             <h4>پاسخگوی سؤالات شما هستیم</h4>
           </div>
           <ul>
-            {/* {msgs.map((msg, idx) => (
+            {msgs.map((msg, idx) => (
               <Li key={idx} fromSelf={msg.fromSelf}>
                 {msg.text}
               </Li>
-            ))} */}
-
-            {/* <Li fromSelf={true}>پاسخگوی سؤالات شما هستیم</Li>
-
-            <Li fromSelf={false}>پاسخگوی سؤالات شما هستیم</Li>
-
-            <Li fromSelf={true}>پاسخگوی سؤالات شما هستیم</Li>
-
-            <Li fromSelf={false}>پاسخگوی سؤالات شما هستیم</Li> */}
+            ))}
           </ul>
         </MsgContainer>
-        <form>
-          <textarea
+        <form onSubmit={handleSend}>
+          <input
             placeholder="پیام شما..."
             value={currentMsg}
             onChange={(e) => setCurrentMsg(e.target.value)}
-          ></textarea>
+          />
 
-          <button onClick={handleSend}>
+          <button type="submit">
             <i className="fas fa-paper-plane"></i>
           </button>
         </form>

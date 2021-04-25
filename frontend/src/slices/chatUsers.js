@@ -8,12 +8,10 @@ const slice = createSlice({
   reducers: {
     addUsers: (state, action) => {
       const users = action.payload;
-      console.log("Inside slice, and users,", users.length);
       state.users = [...users];
     },
 
     addOneUser: (state, action) => {
-      console.log("Inside addOneUser", action.payload);
       const user = action.payload;
       state.users.push(user);
     },

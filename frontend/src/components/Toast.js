@@ -1,31 +1,48 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
-const Div = styled.div`
+const slideUp = keyframes`
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+`;
+
+const Main = styled.div`
   position: fixed;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 128, 128, 0.7);
+  left: 1rem;
+  bottom: 1rem;
+  background: rgba(0, 128, 128, 0.8);
   padding: 1rem;
-  color: #333;
   text-align: center;
+  box-shadow: 0 0 5px 1px rgba(0, 128, 128, 0.8);
+  border-radius: 5px;
   display: ${({ isOpen }) => `${isOpen ? "block" : "none"}`};
+  animation: ${slideUp} 1s;
 
   & span {
     position: absolute;
     right: 4px;
     top: -6px;
-    color: red;
-    font-size: 1.3rem;
+    font-size: 0.9rem;
+    padding: 3px;
+    transition: color 200ms;
 
     &:hover {
       cursor: pointer;
+      color: pink;
     }
   }
 
   & a {
-    color: red;
     text-decoration: underline;
+
+    &:hover {
+      color: pink;
+    }
   }
 
   & p {
@@ -37,8 +54,10 @@ const Toast = () => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <Div isOpen={isOpen}>
-      <span onClick={() => setIsOpen(false)}>x</span>
+    <Main isOpen={isOpen}>
+      <span onClick={() => setIsOpen(false)}>
+        <i className="fas fa-times"></i>
+      </span>
       <p>این پروژه در حال تکمیل شدن است.</p>
       <p>درصد پیشرفت پروژه: ۵۰درصد</p>
       <p>
@@ -51,7 +70,7 @@ const Toast = () => {
         </a>
         پروژه روی گیت هاب
       </p>
-    </Div>
+    </Main>
   );
 };
 

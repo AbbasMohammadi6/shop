@@ -8,6 +8,7 @@ import { getAllProducts } from "../slices/getAllProducts";
 import Loader from "../components/Loader";
 import { convertNumsToPersian, getPersianPrice } from "../utils/helpers";
 import Toast from "../components/Toast";
+import Message from "../components/Message";
 
 /* Todo: Change all of the breakpoints the custome numbers (where it starts to look bad) */
 const Main = styled.div`
@@ -76,7 +77,7 @@ const HomeScreen = () => {
       {loading ? (
         <Loader />
       ) : error ? (
-        <h1>{error}</h1>
+        <Message variant="danger">{error}</Message>
       ) : (
         <Main>
           {products.map((product) => (
@@ -105,10 +106,9 @@ const HomeScreen = () => {
               </CardFooter>
             </Card>
           ))}
-
-          <Toast />
         </Main>
       )}
+      <Toast />
     </>
   );
 };

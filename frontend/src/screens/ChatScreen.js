@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import socket from "../socket";
 import { reset, addUsers, addOneUser, removeUser } from "../slices/chatUsers";
+import Message from "../components/Message";
 
 const Main = styled.div`
   display: flex;
@@ -89,7 +90,7 @@ const Form = styled.form`
   border-radius: 2rem;
   overflow: hidden;
 
-  & textarea {
+  & input {
     width: 92%;
     border: none;
     outline: none;
@@ -118,14 +119,19 @@ const Form = styled.form`
       width: 12%;
     }
 
-    &:hover {
+    &:hover:not[disabled] {
       background: palevioletred;
       color: white;
+    }
+
+    &:disabled {
+      color: #777;
     }
   }
 `;
 
 const ChatScreen = ({ history }) => {
+  // this is very important, if you remove it, each event gets fired multiple times, becauce it sets an event listener on each render
   socket.removeAllListeners();
 
   const [currentMsg, setCurrentMsg] = useState("");
@@ -136,8 +142,6 @@ const ChatScreen = ({ history }) => {
   const { users } = useSelector((state) => state.chatUsers);
   const { userInfo } = useSelector((state) => state.userRegister);
 
-  console.log("Chat Users", users.length);
-
   const handleSend = (e) => {
     e.preventDefault();
     socket.emit("private message", { message: currentMsg, to: currentUser });
@@ -147,12 +151,19 @@ const ChatScreen = ({ history }) => {
     setCurrentMsg("");
   };
 
+  const getNotAdminsCount = () => {
+    let count = 0;
+    users.forEach((user) => {
+      if (!user.isAdmin) count++;
+    });
+    return count;
+  };
+
   socket.on("chat message", ({ message, from }) => {
     setMsgs(msgs.concat({ message, from, to: "admin" }));
   });
 
   useEffect(() => {
-    console.log("CONNECTED:", socket.connected);
     if (!userInfo?.user?.name) history.push("/");
     else if (!socket.connected) {
       dispatch(reset());
@@ -162,124 +173,72 @@ const ChatScreen = ({ history }) => {
   }, [history, userInfo, dispatch]);
 
   socket.on("users", (users) => {
-    console.log("111Users", users.length);
     dispatch(addUsers(users));
   });
 
+  socket.on("messages", (messages) => {
+    setMsgs(messages);
+  });
+
   socket.on("user connected", (user) => {
-    console.log("222User", user);
     dispatch(addOneUser(user));
   });
 
   socket.on("user disconnected", (user) => {
     dispatch(removeUser(user));
+    setMsgs(msgs.filter((m) => m.from !== user.userID && m.to !== user.userID));
   });
 
   return (
-    <Main>
-      <Aside>
-        <ul>
-          {/* {users.map((user, idx) => {
-            if (!user.isAdmin)
-              return (
-                <UserLi
-                  key={idx}
-                  currentUser={currentUser === user.userID}
-                  onClick={() => setCurrentUser(user.userID)}
-                >
-                  {user.userID}
-                </UserLi>
-              );
-            else return null;
-          })} */}
+    <>
+      {!getNotAdminsCount() ? (
+        <Message variant="info">هنوز کاربری وارد چت نشده است</Message>
+      ) : (
+        <Main>
+          <Aside>
+            <ul>
+              {users.map((user, idx) => {
+                if (!user.isAdmin)
+                  return (
+                    <UserLi
+                      key={idx}
+                      currentUser={currentUser === user.userID}
+                      onClick={() => setCurrentUser(user.userID)}
+                    >
+                      {user.userID}
+                    </UserLi>
+                  );
+                else return null;
+              })}
+            </ul>
+          </Aside>
 
-          <UserLi>2452sdfbsdfg34432</UserLi>
-          <UserLi>2452sdfbsdfg34432</UserLi>
-          <UserLi>2452sdfbsdfg34432</UserLi>
-          <UserLi>2452sdfbsdfg34432</UserLi>
-          <UserLi>2452sdfbsdfg34432</UserLi>
-          <UserLi>2452sdfbsdfg34432</UserLi>
-        </ul>
-      </Aside>
-
-      <Chats>
-        <ul>
-          {/* msgs.map(({ message, from, to }, idx) => {
-            if (from === currentUser || to === currentUser)
-              return (
-                <MsgLi key={idx} fromSelf={from === socket.id}>
-                  {message}
-                  <span>{(from === socket.id) ? 'admin' : 'user'}</span>
-                </MsgLi>
-              );
-            else return null;
-          }) */}
-
-          <MsgLi fromSelf={false}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-            <span>{false ? "admin" : "user"}</span>
-          </MsgLi>
-          <MsgLi fromSelf={true}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-            <span>{true ? "admin" : "user"}</span>
-          </MsgLi>
-          <MsgLi fromSelf={false}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-            <span>{false ? "admin" : "user"}</span>
-          </MsgLi>
-          <MsgLi fromSelf={true}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-            <span>{true ? "admin" : "user"}</span>
-          </MsgLi>
-          <MsgLi fromSelf={false}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-          </MsgLi>
-          <MsgLi fromSelf={true}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-          </MsgLi>
-          <MsgLi fromSelf={false}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-          </MsgLi>
-          <MsgLi fromSelf={true}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-          </MsgLi>
-          <MsgLi fromSelf={false}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-          </MsgLi>
-          <MsgLi fromSelf={true}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-          </MsgLi>
-          <MsgLi fromSelf={false}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-          </MsgLi>
-          <MsgLi fromSelf={true}>
-            ن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع
-            کلاس اول
-          </MsgLi>
-        </ul>
-      </Chats>
-      {/* جاوااسکریپت با نوعی زبان برنامه‌نویسی است که با ویژگی‌های ارائه شده در مشخصات اکما اسکریپت مطابق می‌باشد. جاوااسکریپت نوعی زبان سطح بالا، کامپایل درجا، و چندالگویی است. جاوااسکریپت نحو آکولادی دارد، نوع دهی آن پویا است، نوع شیءگرایی اش بر پایه پیش‌نمونه است، و دارای توابع کلاس اول */}
-      <Form>
-        <textarea
-          value={currentMsg}
-          onChange={(e) => setCurrentMsg(e.target.value)}
-        />
-        <button onClick={handleSend} disabled={!currentUser || !currentMsg}>
-          <i className="fas fa-paper-plane"></i>
-        </button>
-      </Form>
-    </Main>
+          <Chats>
+            <ul>
+              {msgs.map(({ message, from, to }, idx) => {
+                if (from === currentUser || to === currentUser)
+                  return (
+                    <MsgLi key={idx} fromSelf={from === socket.id}>
+                      {message}
+                      <span>{from === socket.id ? "admin" : "user"}</span>
+                    </MsgLi>
+                  );
+                else return null;
+              })}
+            </ul>
+          </Chats>
+          <Form onSubmit={handleSend}>
+            <input
+              value={currentMsg}
+              onChange={(e) => setCurrentMsg(e.target.value)}
+            />
+            <button type="submit" disabled={!currentUser || !currentMsg}>
+              <i className="fas fa-paper-plane"></i>
+            </button>
+          </Form>
+        </Main>
+      )}
+    </>
   );
 };
 

@@ -5,7 +5,7 @@ import Container from "./Container";
 import { useSelector } from "react-redux";
 import { getPersianNums } from "../utils/helpers";
 
-const Div = styled.div`
+const Main = styled.div`
   background: #333;
   margin-bottom: 1rem;
 
@@ -101,7 +101,7 @@ const Menu = styled.div`
   margin-left: 1rem;
   position: absolute;
   left: 0;
-  top: 2rem;
+  top: 1rem;
 
   @media (max-width: 700px) {
     display: flex;
@@ -131,7 +131,7 @@ const Header = () => {
   const { products } = useSelector((state) => state.cart);
 
   return (
-    <Div>
+    <Main>
       <Container>
         <Nav>
           <Logo>
@@ -168,7 +168,7 @@ const Header = () => {
           </Menu>
         </Nav>
       </Container>
-    </Div>
+    </Main>
   );
 };
 

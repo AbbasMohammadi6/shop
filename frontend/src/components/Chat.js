@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import socket from "../socket";
 
 const Main = styled.div`
@@ -27,30 +27,93 @@ const Icon = styled.div`
   }
 `;
 
+const openWindow = keyframes`
+  from {
+    width: 0;
+    height: 0;
+  }
+
+  to {
+    width: 18rem;
+    height: 25rem;
+  }
+`;
+
 const ChatWindow = styled.div`
-  height: 15rem;
+  width: 18rem;
+  height: 25rem;
   display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  border: 1px solid #dadada;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  animation: ${openWindow} 500ms;
 
   & form {
-    height: 50%;
+    height: 10%;
+    width: 100%;
     display: flex;
-    flex-direction: column;
+
+    & textarea,
+    & button {
+      border: none;
+      outline: none;
+      flex: 1;
+    }
 
     & textarea {
-      height: 90%;
       resize: none;
+      border-top: 1px solid #dadada;
+      flex: 5;
+      background: white;
+      overflow: auto;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+
+    & button {
+      background: palevioletred;
+      color: white;
+      transition: all 200ms;
+      border: 1px solid palevioletred;
+
+      &:hover {
+        background: white;
+        color: palevioletred;
+        border: 1px solid #dadada;
+      }
     }
   }
 `;
 
 const MsgContainer = styled.div`
-  border: 1px solid #dadada;
-  height: 50%;
-  overflow: scroll;
-`;
+  height: 90%;
+  overflow: auto;
+  background: white;
+  position: relative;
 
-const Li = styled.li`
-  background: ${({ fromSelf }) => (fromSelf ? "springgreen" : "tomato")};
+  & div {
+    text-align: center;
+    border-bottom: 1px solid #dadada;
+
+    & i {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 5px;
+      transition: all 200ms;
+
+      &:hover {
+        color: red;
+        cursor: pointer;
+      }
+    }
+
+    & h4 {
+      padding: 0.5rem 0;
+      font-family: "Shabnam", "Vazir", "sans-serif";
+    }
+  }
 `;
 
 const Chat = () => {
@@ -58,7 +121,8 @@ const Chat = () => {
   const [currentMsg, setCurrentMsg] = useState("");
   const [msgs, setMsgs] = useState([]);
 
-  const handleOpenChat = () => {
+  const handleOpenChat = (e) => {
+    e.preventDefault();
     setIsOpen(!isOpen);
   };
 
@@ -90,20 +154,36 @@ const Chat = () => {
     <Main>
       <ChatWindow isOpen={isOpen}>
         <MsgContainer>
+          <div>
+            <i className="fas fa-times" onClick={handleOpenChat}></i>
+            <h4>پاسخگوی سؤالات شما هستیم</h4>
+          </div>
           <ul>
-            {msgs.map((msg, idx) => (
+            {/* {msgs.map((msg, idx) => (
               <Li key={idx} fromSelf={msg.fromSelf}>
                 {msg.text}
               </Li>
-            ))}
+            ))} */}
+
+            {/* <Li fromSelf={true}>پاسخگوی سؤالات شما هستیم</Li>
+
+            <Li fromSelf={false}>پاسخگوی سؤالات شما هستیم</Li>
+
+            <Li fromSelf={true}>پاسخگوی سؤالات شما هستیم</Li>
+
+            <Li fromSelf={false}>پاسخگوی سؤالات شما هستیم</Li> */}
           </ul>
         </MsgContainer>
         <form>
           <textarea
+            placeholder="پیام شما..."
             value={currentMsg}
             onChange={(e) => setCurrentMsg(e.target.value)}
           ></textarea>
-          <button onClick={handleSend}>ارسال</button>
+
+          <button onClick={handleSend}>
+            <i className="fas fa-paper-plane"></i>
+          </button>
         </form>
       </ChatWindow>
 

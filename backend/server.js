@@ -11,6 +11,10 @@ import runSocket from "./socket.js";
 import passport from "passport";
 import flash from "express-flash";
 import session from "express-session";
+import authRouter from "./routes/authRoutes.js";
+import initGoogleStrategy from "./strategies/google.js";
+import initLocalStrategy from "./strategies/local.js";
+import initLocalSignupStrategy from "./strategies/localSignup.js";
 
 const app = express();
 
@@ -24,7 +28,7 @@ app.use(express.json());
 
 app.use(
   session({
-    maxAge: 30 * 24 * 60 * 60 * 1000,
+    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 },
     secret: process.env.COOKIE_KEY,
     resave: false,
     saveUninitialized: false,
@@ -32,12 +36,16 @@ app.use(
 );
 app.use(flash());
 app.use(passport.initialize());
+initGoogleStrategy();
+initLocalStrategy();
+initLocalSignupStrategy();
 app.use(passport.session());
 
 if (process.env.NODE_ENV !== "production") app.use(morgan("tiny"));
 
 app.use("/api/users/", userRouter);
 app.use("/api/products/", productRouter);
+app.use("/api/auth", authRouter);
 
 const __dirname = path.resolve();
 

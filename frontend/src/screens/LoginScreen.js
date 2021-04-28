@@ -80,7 +80,7 @@ const LoginScreen = ({ history }) => {
 
   const handleGoogleLogin = async () => {
     try {
-      const { data } = await axios.get("/api/users/auth/google");
+      const { data } = await axios.get("/api/auth/google");
     } catch (e) {
       console.log(e);
     }
@@ -88,7 +88,7 @@ const LoginScreen = ({ history }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.get("/api/users/logout");
+      await axios.get("/api/auth/logout");
       /** Redirect manually, res.redirect from server side is not working for react **/
     } catch (e) {
       console.log(e);
@@ -98,7 +98,7 @@ const LoginScreen = ({ history }) => {
   const handlePassportLogin = async () => {
     try {
       const { data } = await axios.post(
-        "/api/users/auth/login",
+        "/api/auth/login",
         { email, password },
         {
           headers: {
@@ -141,9 +141,7 @@ const LoginScreen = ({ history }) => {
       )}
       <button onClick={handleGoogleLogin}>ورود با گوگل</button>
       <button onClick={handleLogout}>خروج از حساب کاربری</button>
-      <a href="http://localhost:5000/api/users/auth/google/">
-        login with google
-      </a>
+      <a href="http://localhost:5000/api/auth/google/">login with google</a>
       <button onClick={handlePassportLogin}>passport login</button>
     </Container>
   );

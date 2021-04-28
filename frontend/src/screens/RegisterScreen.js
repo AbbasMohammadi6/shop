@@ -85,7 +85,7 @@ const RegisterScreen = ({ history }) => {
   const handlePassportRegister = async () => {
     try {
       await axios.post(
-        "/api/users/auth/register",
+        "/api/auth/register",
         { name, email, password },
         {
           headers: {

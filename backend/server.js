@@ -8,6 +8,8 @@ import productRouter from "./routes/productRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import http from "http";
 import runSocket from "./socket.js";
+import passport from "passport";
+import session from "express-session";
 
 const app = express();
 
@@ -19,10 +21,22 @@ runSocket();
 
 app.use(express.json());
 
+app.use(
+  session({
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    secret: process.env.COOKIE_KEY,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 if (process.env.NODE_ENV !== "production") app.use(morgan("tiny"));
 
-app.use("/api/products/", productRouter);
 app.use("/api/users/", userRouter);
+app.use("/api/products/", productRouter);
 
 const __dirname = path.resolve();
 

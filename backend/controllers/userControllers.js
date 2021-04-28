@@ -1,5 +1,10 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
+import { OAuth2Client } from "google-auth-library";
+// const { OAuth2Client } = require('google-auth-library')
+const client = new OAuth2Client(
+  "757700505520-mudq4nhvm3knoh1i0t23vsttij7mlmei.apps.googleusercontent.com"
+);
 
 // desc: Register a user
 // path: /api/users/register

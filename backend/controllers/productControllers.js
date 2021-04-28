@@ -2,8 +2,8 @@ import asyncHandler from "express-async-handler";
 import Product from "../models/productModel.js";
 
 export const getAllProducts = asyncHandler(async (req, res) => {
+  console.log("GETTING ALL OF THE PRODUCTS", req?.user?.name);
   const products = await Product.find({});
-
   res.json(products);
 });
 

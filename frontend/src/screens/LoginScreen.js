@@ -5,6 +5,7 @@ import { loginUser } from "../slices/loginUser";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { device } from "../utils/deviceSizes";
+import axios from "axios";
 
 const Container = styled.div`
   width: 50%;
@@ -67,7 +68,7 @@ const LoginScreen = ({ history }) => {
 
   const { loading, userInfo, error } = useSelector((state) => state.userLogin);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     dispatch(loginUser({ email, password }));
@@ -77,11 +78,28 @@ const LoginScreen = ({ history }) => {
     if (userInfo?.user?.name) history.push("/");
   }, [history, userInfo]);
 
+  const handleGoogleLogin = async () => {
+    try {
+      const { data } = await axios.get("/api/users/auth/google");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.get("/api/users/logout");
+      /** Redirect manually, res.redirect from server side is not working for react **/
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   /** Todo: Could use a simple modal instead of this component  **/
 
   return (
     <Container>
-      <H1>وارد شدن به حساب کاربری</H1>
+      <H1>ورود به حساب کاربری</H1>
       {error && <Message>{error}</Message>}
       {loading ? (
         <Loader />
@@ -105,6 +123,11 @@ const LoginScreen = ({ history }) => {
           <button type="submit">ورود</button>
         </Form>
       )}
+      <button onClick={handleGoogleLogin}>ورود با گوگل</button>
+      <button onClick={handleLogout}>خروج از حساب کاربری</button>
+      <a href="http://localhost:5000/api/users/auth/google/">
+        login with google
+      </a>
     </Container>
   );
 };

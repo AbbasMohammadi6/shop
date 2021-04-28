@@ -158,4 +158,51 @@ router.post(
 
 ////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
+
+const signupUser = async (req, email, password, done) => {
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    return done(null, false, { message: "email already used." });
+  } else {
+    try {
+      const user = await User.create({
+        name: req.body.name,
+        email,
+        password,
+      });
+
+      return done(null, user);
+    } catch (e) {
+      return done(null, false, {
+        message: "something went wrong, try again later",
+      });
+    }
+  }
+};
+
+passport.use(
+  "local-signup",
+  new LocalStrategy(
+    {
+      // by default, local strategy uses username and password, we will override with email
+      usernameField: "email",
+      passReqToCallback: true, // pass req to the callback, because I want to use req.name in mongoose model
+    },
+    signupUser
+  )
+);
+
+router.post(
+  "/auth/register",
+  passport.authenticate("local-signup", {
+    failureFlash: true,
+  }),
+  (req, res) => {
+    console.log("AUTH REGISTER");
+    res.json(req.user);
+  }
+);
+
 export default router;

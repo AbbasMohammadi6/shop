@@ -5,6 +5,7 @@ import { registerUser } from "../slices/registerUser";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { device } from "../utils/deviceSizes";
+import axios from "axios";
 
 const Container = styled.div`
   width: 50%;
@@ -81,6 +82,22 @@ const RegisterScreen = ({ history }) => {
     setMessage("");
   };
 
+  const handlePassportRegister = async () => {
+    try {
+      await axios.post(
+        "/api/users/auth/register",
+        { name, email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
     if (userInfo?.user?.name) history.push("/");
   }, [history, userInfo]);
@@ -125,6 +142,8 @@ const RegisterScreen = ({ history }) => {
           <button type="submit">ثبت نام</button>
         </Form>
       )}
+
+      <button onClick={handlePassportRegister}>passportRegister</button>
     </Container>
   );
 };

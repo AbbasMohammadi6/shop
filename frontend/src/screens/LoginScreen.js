@@ -95,6 +95,22 @@ const LoginScreen = ({ history }) => {
     }
   };
 
+  const handlePassportLogin = async () => {
+    try {
+      const { data } = await axios.post(
+        "/api/users/auth/login",
+        { email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   /** Todo: Could use a simple modal instead of this component  **/
 
   return (
@@ -128,6 +144,7 @@ const LoginScreen = ({ history }) => {
       <a href="http://localhost:5000/api/users/auth/google/">
         login with google
       </a>
+      <button onClick={handlePassportLogin}>passport login</button>
     </Container>
   );
 };

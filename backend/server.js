@@ -9,6 +9,7 @@ import userRouter from "./routes/userRoutes.js";
 import http from "http";
 import runSocket from "./socket.js";
 import passport from "passport";
+import flash from "express-flash";
 import session from "express-session";
 
 const app = express();
@@ -29,7 +30,7 @@ app.use(
     saveUninitialized: false,
   })
 );
-
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 

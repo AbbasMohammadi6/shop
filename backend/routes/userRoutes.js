@@ -112,4 +112,50 @@ router.get("/logout", (req, res) => {
 });
 /////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////
+
+import { Strategy as LocalStrategy } from "passport-local";
+import bcrypt from "bcryptjs";
+
+const authenticateUser = async (email, password, done) => {
+  // const user = getUserByEmail(email)
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return done(null, false, { message: "No user with that email" });
+  }
+
+  try {
+    if (await bcrypt.compare(password, user.password)) {
+      return done(null, user);
+    } else {
+      return done(null, false, { message: "Password incorrect" });
+    }
+  } catch (e) {
+    return done(e);
+  }
+};
+
+passport.use(new LocalStrategy({ usernameField: "email" }, authenticateUser));
+
+router.post(
+  "/auth/login",
+  passport.authenticate("local", {
+    failureFlash: true,
+  }),
+  (req, res) => {
+    console.log("AUTH LOGIN");
+    res.json(req.user);
+  }
+);
+
+// app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+//   successRedirect: '/',
+//   failureRedirect: '/login',
+//   failureFlash: true
+// }))
+
+////////////////////////////////////////////////////////
+
 export default router;

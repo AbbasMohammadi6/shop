@@ -145,7 +145,7 @@ const LoginScreen = ({ history }) => {
 
           <a
             href={`${
-              process.env.NODE_env === "production"
+              process.env.NODE_ENV === "production"
                 ? "https://aria-shop.herokuapp.com/api/auth/google/"
                 : "http://localhost:5000/api/auth/google/"
             }`}

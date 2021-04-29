@@ -143,7 +143,13 @@ const LoginScreen = ({ history }) => {
 
           <hr />
 
-          <a href="http://localhost:5000/api/auth/google/">
+          <a
+            href={`${
+              process.env.NODE_env === "production"
+                ? "https://aria-shop.herokuapp.com/api/auth/google/"
+                : "http://localhost:5000/api/auth/google/"
+            }`}
+          >
             <span>ورود با گوگل</span> <i className="fab fa-google"></i>
           </a>
         </Form>

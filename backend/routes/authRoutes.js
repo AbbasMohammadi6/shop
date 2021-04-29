@@ -32,15 +32,16 @@ router.get("/logout", (req, res) => {
     // deletes the coockie that was saved in the browser
     res.clearCookie("connect.sid");
     // when I delete this, it doesn't delete the cookie in the browser????
-    res.redirect("http://localhost:3000/");
+    res.redirect("/");
   });
 });
 
 router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
 
 router.get("/google/callback", passport.authenticate("google"), (req, res) => {
-  // res.send(req.user);
-  res.redirect("http://localhost:3000/");
+  const URL =
+    process.env.NODE_ENV === "production" ? "/" : "http://localhost:3000/";
+  res.redirect(URL);
 });
 
 /** Todo: move these two in some other file **/

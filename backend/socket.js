@@ -4,6 +4,8 @@ import { httpServer } from "./server.js";
 const runSocket = () => {
   const io = new socketServer(httpServer, {
     cors: {
+      // heroku doens't need this cors things, becuause I didn't specify it as env variable and it works, without that.
+      // http://localhost:3000
       origin: process.env.FRONTEND_URL,
       methods: ["GET", "POST"],
     },

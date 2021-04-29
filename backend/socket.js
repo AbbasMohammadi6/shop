@@ -4,7 +4,7 @@ import { httpServer } from "./server.js";
 const runSocket = () => {
   const io = new socketServer(httpServer, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: process.env.FRONTEND_URL,
       methods: ["GET", "POST"],
     },
   });

@@ -5,7 +5,6 @@ import { registerUser } from "../slices/registerUser";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { device } from "../utils/deviceSizes";
-import axios from "axios";
 
 const Container = styled.div`
   width: 50%;
@@ -69,7 +68,7 @@ const RegisterScreen = ({ history }) => {
 
   const dispatch = useDispatch();
 
-  const { loading, userInfo, error } = useSelector(
+  const { loading, success, error } = useSelector(
     (state) => state.userRegister
   );
 
@@ -82,25 +81,9 @@ const RegisterScreen = ({ history }) => {
     setMessage("");
   };
 
-  // const handlePassportRegister = async () => {
-  //   try {
-  //     await axios.post(
-  //       "/api/auth/register",
-  //       { name, email, password },
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
   useEffect(() => {
-    if (userInfo?.name) history.push("/");
-  }, [history, userInfo]);
+    if (success) history.push("/");
+  }, [history, success]);
 
   return (
     <Container>
@@ -142,8 +125,6 @@ const RegisterScreen = ({ history }) => {
           <button type="submit">ثبت نام</button>
         </Form>
       )}
-
-      {/* <button onClick={handlePassportRegister}>passportRegister</button> */}
     </Container>
   );
 };

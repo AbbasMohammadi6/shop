@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Container from "./Container";
 import { useSelector, useDispatch } from "react-redux";
 import { getPersianNums } from "../utils/helpers";
-import { logoutUser } from "../slices/registerUser";
+import { logoutUser } from "../slices/getUser";
 
 const Main = styled.div`
   background: #333;
@@ -137,8 +137,9 @@ const LogoutSpan = styled.span`
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { userInfo } = useSelector((state) => state.userRegister);
   const { products } = useSelector((state) => state.cart);
+
+  const { user } = useSelector((state) => state.userInfo);
 
   const dispatch = useDispatch();
 
@@ -164,10 +165,10 @@ const Header = () => {
                 )}
               </I>
             </Link>
-            {userInfo?.name ? (
+            {user.name ? (
               <>
-                <Link to="/me">{userInfo.name}</Link>
-                {userInfo.isAdmin && <Link to="/chat">چت</Link>}
+                <Link to="/me">{user.name}</Link>
+                {user.isAdmin && <Link to="/chat">چت</Link>}
                 <LogoutSpan onClick={handleLogout}>خروج</LogoutSpan>
               </>
             ) : (

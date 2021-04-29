@@ -6,7 +6,6 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { device } from "../utils/deviceSizes";
 import { Link } from "react-router-dom";
-import axios from "axios";
 
 const Container = styled.div`
   width: 50%;
@@ -101,43 +100,16 @@ const LoginScreen = ({ history }) => {
 
   const dispatch = useDispatch();
 
-  const { loading, userInfo, error } = useSelector((state) => state.userLogin);
+  const { loading, success, error } = useSelector((state) => state.userLogin);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     dispatch(loginUser({ email, password }));
   };
 
   useEffect(() => {
-    if (userInfo.name) history.push("/");
-  }, [history, userInfo]);
-
-  // const handleLogout = async () => {
-  //   //remember to delete the things in the local storage also
-  //   try {
-  //     await axios.get("/api/auth/logout");
-  //     /** Redirect manually, res.redirect from server side is not working for react **/
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // const handlePassportLogin = async () => {
-  //   try {
-  //     const { data } = await axios.post(
-  //       "/api/auth/login",
-  //       { email, password },
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+    if (success) history.push("/");
+  }, [history, success]);
 
   /** Todo: Could use a simple modal instead of this component  **/
 
@@ -176,8 +148,6 @@ const LoginScreen = ({ history }) => {
           </a>
         </Form>
       )}
-      {/* <button onClick={handleLogout}>خروج از حساب کاربری</button> */}
-      {/* <button onClick={handlePassportLogin}>passport login</button> */}
     </Container>
   );
 };

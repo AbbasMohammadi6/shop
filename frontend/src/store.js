@@ -6,10 +6,7 @@ import userLoginReducer from "./slices/loginUser";
 import cartReducer from "./slices/cart";
 import chatUsersReducer from "./slices/chatUsers";
 import chatMessagesReducer from "./slices/chatMessages";
-
-const userInfo = localStorage.getItem("userInfo")
-  ? JSON.parse(localStorage.getItem("userInfo"))
-  : {};
+import userInfoReducer from "./slices/getUser";
 
 const cart = localStorage.getItem("cart")
   ? JSON.parse(localStorage.getItem("cart"))
@@ -17,7 +14,6 @@ const cart = localStorage.getItem("cart")
 
 const store = configureStore({
   preloadedState: {
-    userRegister: { userInfo },
     cart,
   },
 
@@ -29,6 +25,7 @@ const store = configureStore({
     cart: cartReducer,
     chatUsers: chatUsersReducer,
     chatMessages: chatMessagesReducer,
+    userInfo: userInfoReducer,
   },
 });
 

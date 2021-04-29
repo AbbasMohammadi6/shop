@@ -1,20 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { success as registerSuccess } from "./registerUser";
+import { success as getUserSuccess } from "./getUser";
 
 const slice = createSlice({
   name: "loginUser",
 
-  initialState: { userInfo: {} },
+  initialState: {},
 
   reducers: {
     request: (state) => {
       state.loading = true;
     },
 
-    success: (state, action) => {
+    success: (state) => {
       state.loading = false;
-      state.userInfo = action.payload;
+      state.success = true;
       state.error = null;
     },
 
@@ -24,7 +24,7 @@ const slice = createSlice({
     },
 
     reset: (state) => {
-      state.userInfo = {};
+      state.success = false;
     },
   },
 });
@@ -43,9 +43,8 @@ const loginUser = (user) => async (dispatch) => {
   try {
     const { data } = await axios.post("/api/auth/login", user, config);
 
-    dispatch(success(data));
-    dispatch(registerSuccess(data));
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    dispatch(success());
+    dispatch(getUserSuccess(data));
   } catch (e) {
     dispatch(fail(e.response.data));
   }

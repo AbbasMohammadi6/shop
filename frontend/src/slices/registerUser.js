@@ -1,20 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { success as loginSuccess, reset as resetLogin } from "./loginUser";
+import { success as getUserSuccess } from "./getUser";
 
 const slice = createSlice({
   name: "registerUser",
 
-  initialState: { userInfo: {} },
+  initialState: {},
 
   reducers: {
     request: (state) => {
       state.loading = true;
     },
 
-    success: (state, action) => {
+    success: (state) => {
       state.loading = false;
-      state.userInfo = action.payload;
+      state.success = true;
       state.error = null;
     },
 
@@ -24,7 +24,7 @@ const slice = createSlice({
     },
 
     reset: (state) => {
-      state.userInfo = {};
+      state.success = false;
     },
   },
 });
@@ -43,29 +43,12 @@ const registerUser = (user) => async (dispatch) => {
   try {
     const { data } = await axios.post("/api/auth/register", user, config);
 
-    dispatch(success(data));
-    dispatch(loginSuccess(data));
-
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    dispatch(success());
+    dispatch(getUserSuccess(data));
   } catch (e) {
     dispatch(fail(e.response.data));
   }
 };
 
-const logoutUser = () => async (dispatch) => {
-  try {
-    // remove the cookie
-    await axios.get("/api/auth/logout");
-
-    dispatch(reset());
-    dispatch(resetLogin());
-
-    localStorage.removeItem("userInfo");
-  } catch (e) {
-    /* Todo: show this error as Message */
-    console.log(e);
-  }
-};
-
-export { registerUser, success, logoutUser };
+export { registerUser, reset };
 export default slice.reducer;

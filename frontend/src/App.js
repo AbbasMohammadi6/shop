@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { Switch, Route } from "react-router-dom";
 import Container from "./components/Container";
@@ -9,8 +9,9 @@ import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from "./screens/LoginScreen";
 import CartScreen from "./screens/CartScreen";
 import Chat from "./components/Chat";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import ChatScreen from "./screens/ChatScreen";
+import { getUser } from "./slices/getUser";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -42,7 +43,13 @@ const Main = styled.main`
 `;
 
 const App = () => {
-  const { userInfo } = useSelector((state) => state.userRegister);
+  const { user } = useSelector((state) => state.userInfo);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, [dispatch]);
 
   return (
     <>
@@ -59,7 +66,7 @@ const App = () => {
             <Route exact path="/chat" component={ChatScreen} />
           </Switch>
 
-          {!userInfo.user?.isAdmin && <Chat />}
+          {!user.isAdmin && <Chat />}
         </Container>
       </Main>
     </>

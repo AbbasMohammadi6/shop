@@ -145,7 +145,7 @@ const ChatScreen = ({ history }) => {
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state.chatUsers);
   const { messages } = useSelector((state) => state.chatMessages);
-  const { userInfo } = useSelector((state) => state.userRegister);
+  const { user } = useSelector((state) => state.userInfo);
 
   const handleSend = (e) => {
     e.preventDefault();
@@ -173,13 +173,13 @@ const ChatScreen = ({ history }) => {
   });
 
   useEffect(() => {
-    if (!userInfo?.user?.name) history.push("/");
+    if (!user.name) history.push("/");
     else if (!socket.connected) {
       dispatch(reset());
       socket.auth = { isAdmin: true };
       socket.connect();
     }
-  }, [history, userInfo, dispatch]);
+  }, [history, user, dispatch]);
 
   socket.on("users", (users) => {
     dispatch(addUsers(users));

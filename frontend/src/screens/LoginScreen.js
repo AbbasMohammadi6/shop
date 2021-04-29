@@ -5,6 +5,7 @@ import { loginUser } from "../slices/loginUser";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { device } from "../utils/deviceSizes";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const Container = styled.div`
@@ -33,20 +34,26 @@ const H1 = styled.h1`
 const Form = styled.form`
   margin-top: 2rem;
 
-  & * {
+  & input,
+  & button,
+  & > a {
     display: inline-block;
     width: 100%;
-    margin-bottom: 2rem;
     height: 2.5rem;
     padding: 0 1rem;
-    border-radius: none;
+    font-size: 0.85rem;
+  }
+
+  input {
+    margin-bottom: 2rem;
   }
 
   input:invalid:required {
     outline: 1px solid potato;
   }
 
-  & button {
+  & button,
+  & > a {
     background: palevioletred;
     transition: background 200ms;
     border: 1px solid white;
@@ -55,6 +62,34 @@ const Form = styled.form`
     &:hover {
       background: white;
       border: 1px solid palevioletred;
+      color: palevioletred;
+    }
+  }
+
+  & > a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & i {
+      margin-right: 1rem;
+    }
+  }
+
+  & hr {
+    margin-bottom: 2rem;
+    border: none;
+    height: 1px;
+    background: #ccc;
+  }
+
+  & small {
+    font-size: 0.6rem;
+    text-align: left;
+    display: block;
+    margin: 0.5rem 0 1rem;
+
+    & a:hover {
       color: palevioletred;
     }
   }
@@ -75,52 +110,45 @@ const LoginScreen = ({ history }) => {
   };
 
   useEffect(() => {
-    if (userInfo?.user?.name) history.push("/");
+    if (userInfo.name) history.push("/");
   }, [history, userInfo]);
 
-  const handleGoogleLogin = async () => {
-    try {
-      const { data } = await axios.get("/api/auth/google");
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const handleLogout = async () => {
+  //   //remember to delete the things in the local storage also
+  //   try {
+  //     await axios.get("/api/auth/logout");
+  //     /** Redirect manually, res.redirect from server side is not working for react **/
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
-  const handleLogout = async () => {
-    try {
-      await axios.get("/api/auth/logout");
-      /** Redirect manually, res.redirect from server side is not working for react **/
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const handlePassportLogin = async () => {
-    try {
-      const { data } = await axios.post(
-        "/api/auth/login",
-        { email, password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const handlePassportLogin = async () => {
+  //   try {
+  //     const { data } = await axios.post(
+  //       "/api/auth/login",
+  //       { email, password },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
   /** Todo: Could use a simple modal instead of this component  **/
 
   return (
     <Container>
-      <H1>ورود به حساب کاربری</H1>
       {error && <Message>{error}</Message>}
       {loading ? (
         <Loader />
       ) : (
         <Form onSubmit={handleSubmit}>
+          <H1>ورود به حساب کاربری</H1>
           <input
             type="email"
             value={email}
@@ -137,12 +165,19 @@ const LoginScreen = ({ history }) => {
           />
 
           <button type="submit">ورود</button>
+          <small>
+            حساب کاربری ندارید؟<Link to="/register"> عضو شوید</Link>
+          </small>
+
+          <hr />
+
+          <a href="http://localhost:5000/api/auth/google/">
+            <span>ورود با گوگل</span> <i className="fab fa-google"></i>
+          </a>
         </Form>
       )}
-      <button onClick={handleGoogleLogin}>ورود با گوگل</button>
-      <button onClick={handleLogout}>خروج از حساب کاربری</button>
-      <a href="http://localhost:5000/api/auth/google/">login with google</a>
-      <button onClick={handlePassportLogin}>passport login</button>
+      {/* <button onClick={handleLogout}>خروج از حساب کاربری</button> */}
+      {/* <button onClick={handlePassportLogin}>passport login</button> */}
     </Container>
   );
 };

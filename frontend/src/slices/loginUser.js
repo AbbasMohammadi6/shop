@@ -22,12 +22,16 @@ const slice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+
+    reset: (state) => {
+      state.userInfo = {};
+    },
   },
 });
 
-const { request, success, fail } = slice.actions;
+const { request, success, fail, reset } = slice.actions;
 
-export const loginUser = (user) => async (dispatch) => {
+const loginUser = (user) => async (dispatch) => {
   dispatch(request());
 
   const config = {
@@ -37,7 +41,7 @@ export const loginUser = (user) => async (dispatch) => {
   };
 
   try {
-    const { data } = await axios.post("/api/users/login", user, config);
+    const { data } = await axios.post("/api/auth/login", user, config);
 
     dispatch(success(data));
     dispatch(registerSuccess(data));
@@ -47,4 +51,5 @@ export const loginUser = (user) => async (dispatch) => {
   }
 };
 
+export { loginUser, success, reset };
 export default slice.reducer;

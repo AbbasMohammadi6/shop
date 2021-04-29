@@ -82,35 +82,35 @@ const RegisterScreen = ({ history }) => {
     setMessage("");
   };
 
-  const handlePassportRegister = async () => {
-    try {
-      await axios.post(
-        "/api/auth/register",
-        { name, email, password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const handlePassportRegister = async () => {
+  //   try {
+  //     await axios.post(
+  //       "/api/auth/register",
+  //       { name, email, password },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
   useEffect(() => {
-    if (userInfo?.user?.name) history.push("/");
+    if (userInfo?.name) history.push("/");
   }, [history, userInfo]);
 
   return (
     <Container>
-      <H1>عضو شوید</H1>
       {message && <Message>{message}</Message>}
       {error && <Message>{error}</Message>}
       {loading ? (
         <Loader />
       ) : (
         <Form onSubmit={handleSubmit}>
+          <H1>عضو شوید</H1>
           <input
             type="text"
             value={name}
@@ -143,7 +143,7 @@ const RegisterScreen = ({ history }) => {
         </Form>
       )}
 
-      <button onClick={handlePassportRegister}>passportRegister</button>
+      {/* <button onClick={handlePassportRegister}>passportRegister</button> */}
     </Container>
   );
 };

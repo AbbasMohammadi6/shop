@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Container from "./Container";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getPersianNums } from "../utils/helpers";
+import { logoutUser } from "../slices/registerUser";
 
 const Main = styled.div`
   background: #333;
@@ -124,11 +125,26 @@ const Menu = styled.div`
   }
 `;
 
+const LogoutSpan = styled.span`
+  transition: all 200ms;
+
+  &:hover {
+    color: palevioletred;
+    cursor: pointer;
+  }
+`;
+
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { userInfo } = useSelector((state) => state.userRegister);
   const { products } = useSelector((state) => state.cart);
+
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+  };
 
   return (
     <Main>
@@ -148,14 +164,15 @@ const Header = () => {
                 )}
               </I>
             </Link>
-            {userInfo?.user?.name ? (
+            {userInfo?.name ? (
               <>
-                <Link to="/me">{userInfo.user.name}</Link>
-                {userInfo.user.isAdmin && <Link to="/chat">چت</Link>}
+                <Link to="/me">{userInfo.name}</Link>
+                {userInfo.isAdmin && <Link to="/chat">چت</Link>}
+                <LogoutSpan onClick={handleLogout}>خروج</LogoutSpan>
               </>
             ) : (
               <>
-                <Link to="/register">ثبت نام </Link>
+                <Link to="/register"> عضویت</Link>
                 <Link to="/login">ورود</Link>
               </>
             )}

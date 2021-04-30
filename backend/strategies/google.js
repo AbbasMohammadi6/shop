@@ -10,8 +10,10 @@ export default function init() {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        /** Todo: you could add the first part of url in the .env file and add an if statement to use localhost on development and use the heroku one on production  **/
-        callbackURL: "http://localhost:5000/api/auth/google/callback",
+        callbackURL:
+          process.env.NODE_ENV === "production"
+            ? "https://aria-shop.herokuapp.com/api/auth/google/callback"
+            : "http://localhost:5000/api/auth/google/callback",
       },
       // profile contains the authenticated user's Google profile. The verify callback must call cb providing a user to complete authentication.
       async function (accessToken, refreshToken, profile, cb) {
